@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Arsenal clair : fond neutre froid, un seul accent vert (contraste AA sur blanc) */
+  --background: 220 14% 96%;
+  --foreground: 220 15% 10%;
+  --card: 0 0% 100%;
+  --muted: 220 13% 92%;
+  --muted-foreground: 220 8% 40%;
+  --border: 220 12% 85%;
+  --accent: 142 76% 30%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 72% 45%;
+  --warning: 32 90% 36%;
+  --success: 142 76% 30%;
+}
+
+* { border-color: hsl(var(--border)); }
+
+html, body { height: 100%; }
+
+body {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer utilities {
+  /* Titres condensés en capitales */
+  .font-display { font-family: var(--font-display), var(--font-body), sans-serif; text-transform: uppercase; letter-spacing: 0.04em; }
+  /* Chiffres techniques : cm, mm, prix */
+  .font-tech { font-family: var(--font-tech), ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  /* Coins biseautés (haut-droit et bas-gauche) */
+  .bevel { clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px)); }
+  /* Fond studio photo : lumière douce venant du haut, sol légèrement plus sombre */
+  .studio-backdrop {
+    background-color: #e3e5e9;
+    background-image: radial-gradient(120% 90% at 45% 25%, #ffffff 0%, #eef0f3 45%, #d9dce1 100%);
+  }
+}
+
+/* Slider natif : piste épaisse remplie jusqu'au curseur, gros curseur rond */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(to right, hsl(var(--accent)) var(--p, 50%), hsl(var(--border)) var(--p, 50%));
+  width: 100%;
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 28px; width: 28px; border-radius: 999px;
+  background: hsl(var(--card));
+  border: 4px solid hsl(var(--accent));
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  cursor: grab;
+  transition: transform .15s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.12); }
+input[type="range"]:active::-webkit-slider-thumb { cursor: grabbing; transform: scale(1.2); }
+input[type="range"]::-moz-range-thumb {
+  height: 22px; width: 22px; border-radius: 999px;
+  background: hsl(var(--card));
+  border: 4px solid hsl(var(--accent));
+  cursor: grab;
+}
+input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 6px hsl(var(--accent) / .3); }
+
+/* Animations d'interface (tailwind.config.ts est en lecture seule : définies ici) */
+@keyframes pop { 0% { transform: scale(0); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
+@keyframes bump { 0% { transform: scale(1); } 40% { transform: scale(1.06); } 100% { transform: scale(1); } }
+@keyframes float-up {
+  0% { opacity: 0; transform: translateY(6px); } 15% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10px); }
+}
+@layer utilities {
+  .animate-pop { animation: pop .35s cubic-bezier(.34,1.56,.64,1) both; }
+  .animate-bump { animation: bump .4s ease-out; }
+  .animate-float-up { animation: float-up 1.6s ease-out forwards; }
+}
+
+/* Bord lumineux RGB animé (vignette de l'option) */
+@property --rgb-a { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+@keyframes rgb-spin { to { --rgb-a: 360deg; } }
+.rgb-ring {
+  background: conic-gradient(from var(--rgb-a), #ff2d55, #ffcc00, #34c759, #0a84ff, #bf5af2, #ff2d55);
+  animation: rgb-spin 3s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
